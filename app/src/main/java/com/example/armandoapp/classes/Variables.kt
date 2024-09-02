@@ -32,6 +32,19 @@ package com.example.armandoapp.classes
 
         println(add())
         println(product(10,92))
+        printArray(names)
+        println(names.joinToString())
+
+        val numbers = arrayOf(1,2,3,4,5,6,7,8,9)
+        isEven(numbers)
+
+        println(getDay(2))
+
+        val person = Person("Juan", 22)
+        println(person.name)
+        println(person.age)
+
+        person.displayInformation()
     }
 
     fun add():Int{
@@ -44,4 +57,46 @@ package com.example.armandoapp.classes
     fun product(x:Int, y:Int):Int{
         return x+y
     }
+
+    fun printArray(names:Array<String>){
+        for (name in names){
+            print("Hello $name, ")
+        }
+    }
+
+    fun isEven(numbers:Array<Int>){
+        for (number in numbers){
+            if (number%2==0){
+                println("$number is even")
+            }
+            else{
+                println("$number is odd")
+            }
+        }
+    }
+
+    fun getDay(day:Int):String{
+        var name = ""
+
+        when(day){
+            1 -> name = "Monday"
+            2 -> name = "Tuesday"
+            3 -> name = "Wednesday"
+            4 -> name = "Thursday"
+            5 -> name = "Friday"
+            6 -> name = "Saturday"
+            7 -> name = "Sunday"
+            else -> name = "Incorrect value"
+        }
+
+        return name
+    }
+
+    class Person (val name:String, val age:Int){
+        fun displayInformation(){
+            println("Name: $name, Age: $age")
+        }
+    }
+
+
 //}
