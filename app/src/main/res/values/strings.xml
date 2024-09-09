@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">ArmandoApp</string>
     <string name="hello_world_text">Hello World!</string>
+    <string name="text_card">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam lacinia dui finibus, ullamcorper lectus id, pharetra turpis. In hac habitasse platea dictumst. Morbi gravida tortor sed faucibus tempus. Pellentesque fringilla enim eros, nec gravida mauris convallis eget. Aenean ac posuere magna, sed lacinia nibh. Cras id lacinia odio, at tincidunt velit. Nunc odio diam, molestie sit amet nunc quis, gravida interdum lorem. Aliquam ac tellus et lacus posuere commodo. Donec placerat, orci ac aliquam imperdiet, lectus enim dictum lacus, vitae laoreet ex nunc non lacus. Suspendisse potenti. Nulla egestas neque quis lorem blandit, eget pharetra lectus gravida. Nullam ac lacus augue. Cras bibendum tristique augue et lacinia.</string>
 </resources>

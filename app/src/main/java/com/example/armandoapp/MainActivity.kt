@@ -15,8 +15,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.paddingFrom
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,6 +40,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,10 +52,16 @@ class MainActivity : ComponentActivity() {
         //enableEdgeToEdge()
         setContent {
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
             ){
+                CustomText()
+                Picture()
+                Content1()
+                Content2()
                // Text(text = "Simple Text")
                 //ModifierExample()
                 //ModifierExample2()
@@ -179,6 +191,83 @@ fun Picture(){
             contentScale = ContentScale.Fit
 
         )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun Content1(){
+    Card(
+        modifier = Modifier
+            .background(Color.LightGray)
+            .fillMaxWidth()
+            .padding(5.dp)
+    ){
+        Text(text="This is a title",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .padding(10.dp)
+        )
+        Image(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(100.dp),
+            painter = painterResource(id = R.drawable.rym),
+            contentDescription = "Rick and Morty Wallpaper",
+            contentScale = ContentScale.Crop
+        )
+        Text(stringResource(R.string.text_card),
+            lineHeight = 18.sp,
+            textAlign = TextAlign.Justify,
+            modifier = Modifier
+                .padding(10.dp)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun Content2(){
+    Card(
+        modifier = Modifier
+            .background(Color.LightGray)
+            .fillMaxWidth()
+            .padding(5.dp)
+    ){
+        Row{
+            Image(
+                modifier = Modifier
+                    .width(200.dp)
+                    .padding(
+                        0.dp,15.dp
+                    ),
+
+                painter = painterResource(id = R.drawable.rym),
+                contentDescription = "Rick and Morty Wallpaper",
+                contentScale = ContentScale.Fit
+            )
+            Column {
+                Text(text="This is a title",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .padding(10.dp)
+                )
+                Text(stringResource(R.string.text_card),
+                    maxLines = 5,
+                    lineHeight = 18.sp,
+                    textAlign = TextAlign.Justify,
+                    modifier = Modifier
+                        .padding(10.dp)
+                )
+
+            }
+
+        }
+
+
+
     }
 }
 
