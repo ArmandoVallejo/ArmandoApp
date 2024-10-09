@@ -81,6 +81,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimeInput
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TimePickerDefaults
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.rememberTimePickerState
@@ -105,10 +106,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.navigation.NavController
+import androidx.window.core.layout.WindowHeightSizeClass
+import androidx.window.core.layout.WindowWidthSizeClass
 import com.example.armandoapp.R
 import com.example.armandoapp.data.model.MenuModel
 import com.example.armandoapp.data.model.PostModel
 import com.example.armandoapp.ui.components.PostCard
+import com.example.armandoapp.ui.components.PostCardCompact
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -131,6 +135,7 @@ fun Components(navController: NavController){
         MenuModel(10,"SnackBars", "SnackBars",Icons.Filled.Email),
         MenuModel(11,"AlertDialogs", "AlertDialogs",Icons.Filled.Edit),
         MenuModel(12,"Bars", "Bars",Icons.Filled.Settings),
+        MenuModel(13,"Adaptive", "Adaptive",Icons.Filled.Close)
     )
     var component by rememberSaveable{ mutableStateOf("") }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -205,6 +210,9 @@ fun Components(navController: NavController){
                 }
                 "Bars"->{
                     Bars()
+                }
+                "Adaptive"->{
+                    Adaptive()
                 }
 
             }
@@ -461,8 +469,7 @@ fun Badges(){
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DialExample(
-) {
+fun DialExample() {
     val currentTime = Calendar.getInstance()
 
     val timePickerState = rememberTimePickerState(
@@ -755,15 +762,21 @@ private fun Bars(){
     }
 }
 
-
 @Composable
-fun Posts(arrayPosts:Array<PostModel>){
-    LazyRow(
+fun Posts(arrayPosts:Array<PostModel>, adaptive:String){
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
     ){
         items(arrayPosts){post ->
-            PostCard(post.id, post.title, post.text, post.image)
+            when(adaptive){
+                "PhoneP"->{
+                    PostCardCompact(post.id, post.title, post.text, post.image)
+                }
+                "PhoneL"->{
+                    PostCard(post.id, post.title, post.text, post.image)
+                }
+            }
         }
 
     }
@@ -781,6 +794,43 @@ fun PostsGrid(arrayPosts: Array<PostModel>){
         }
 
     }
+}
+
+@Preview(showBackground = true, device = "spec:id=reference_tablet,shape=Normal,width=1280,height=800,unit=dp,dpi=240")
+@Composable
+fun Adaptive(){
+    var WindowsSize = currentWindowAdaptiveInfo().windowSizeClass
+    var heigth = currentWindowAdaptiveInfo().windowSizeClass.windowHeightSizeClass
+    var width = currentWindowAdaptiveInfo().windowSizeClass.windowWidthSizeClass
+
+    var post = arrayOf(
+        PostModel(1,"Title 1 of the card", "Text 1 of the card", painterResource(R.drawable.rym)),
+        PostModel(2,"Title 2 of the card", "Text 2 of the card", painterResource(R.drawable.rym)),
+        PostModel(3,"Title 3 of the card", "Text 3 of the card", painterResource(R.drawable.rym)),
+        PostModel(4,"Title 4 of the card", "Text 4 of the card", painterResource(R.drawable.rym)),
+        PostModel(5,"Title 5 of the card", "Text 5 of the card", painterResource(R.drawable.rym)),
+        PostModel(6,"Title 6 of the card", "Text 6 of the card", painterResource(R.drawable.rym)),
+        PostModel(7,"Title 7 of the card", "Text 7 of the card", painterResource(R.drawable.rym)),
+        PostModel(8,"Title 8 of the card", "Text 8 of the card", painterResource(R.drawable.rym))
+    )
+
+    if (width == WindowWidthSizeClass.COMPACT){
+        Posts(post, "PhoneP")
+    } else if (heigth == WindowHeightSizeClass.COMPACT){
+        Posts(post, "PhoneL")
+    } else{
+        Posts(post, "PhoneL")
+    }
+    //Text(text = WindowsSize.toString())
+
+    //width | compact<600dp | phone portrait
+    //width | medium>=600dp <840dp | tablet portrait
+    //width | expanded>840dp | tablet landscape
+
+    //height | compact<480dp | phone landscape
+    //height | medium >=480dp <900dp | tablet landscape or phone portrait
+    //height | expanded >900dp | tablet portrait
+
 }
 
 
