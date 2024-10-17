@@ -14,18 +14,29 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Favorite
@@ -70,6 +81,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimeInput
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TimePickerDefaults
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.rememberTimePickerState
@@ -78,11 +90,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role.Companion.Switch
 import androidx.compose.ui.text.font.FontWeight
@@ -92,8 +106,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.navigation.NavController
+import androidx.window.core.layout.WindowHeightSizeClass
+import androidx.window.core.layout.WindowWidthSizeClass
 import com.example.armandoapp.R
+import com.example.armandoapp.data.model.MenuModel
 import com.example.armandoapp.data.model.PostModel
+import com.example.armandoapp.ui.components.PostCard
+import com.example.armandoapp.ui.components.PostCardCompact
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -103,7 +122,22 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Components(navController: NavController){
-    var component by remember{ mutableStateOf("") }
+    val menuOptions = arrayOf(
+        MenuModel(1,"Buttons", "Buttons",Icons.Filled.Add),
+        MenuModel(2,"FloatingActionButtons", "FloatingActionButtons",Icons.Filled.Home),
+        MenuModel(3,"Chips", "Chips",Icons.Filled.ShoppingCart),
+        MenuModel(4,"Progress", "Progress",Icons.Filled.ThumbUp),
+        MenuModel(5,"Sliders", "Sliders",Icons.Filled.Share),
+        MenuModel(6,"Switches", "Switches",Icons.Filled.AccountCircle),
+        MenuModel(7,"Badges", "Badges",Icons.Filled.Menu),
+        MenuModel(8,"TimePickerExamples", "TimePickerExamples",Icons.Filled.DateRange),
+        MenuModel(9,"DatePickerExamples", "DatePickerExamples",Icons.Filled.Favorite),
+        MenuModel(10,"SnackBars", "SnackBars",Icons.Filled.Email),
+        MenuModel(11,"AlertDialogs", "AlertDialogs",Icons.Filled.Edit),
+        MenuModel(12,"Bars", "Bars",Icons.Filled.Settings),
+        MenuModel(13,"Adaptive", "Adaptive",Icons.Filled.Close)
+    )
+    var component by rememberSaveable{ mutableStateOf("") }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     ModalNavigationDrawer(
@@ -113,176 +147,27 @@ fun Components(navController: NavController){
             ModalDrawerSheet {
                 Text("Menu", modifier = Modifier.padding(16.dp))
                 HorizontalDivider()
-                NavigationDrawerItem(label = { Text("Content 1")},
-                    selected = false,
-                    onClick = {
-                        component = "Content1"
-                        scope.launch { 
-                            drawerState.apply { 
-                                close()
-                            }
-                            
-                        }
-                    }
-                )
-                NavigationDrawerItem(label = { Text("Content 2")},
-                    selected = false,
-                    onClick = {
-                        component = "Content2"
-                        scope.launch {
-                            drawerState.apply {
-                                close()
-                            }
+                LazyColumn {
+                    items(menuOptions){item ->
+                        NavigationDrawerItem(
+                            icon = { Icon(item.icon, contentDescription = "")},
+                            label = {Text(item.title)},
+                            selected = false,
+                            onClick = {
+                                component = item.option
+                                scope.launch {
+                                    drawerState.apply {
+                                        close()
+                                    }
 
-                        }
-                    }
-                )
-                NavigationDrawerItem(label = { Text("Buttons")},
-                    selected = false,
-                    onClick = {
-                        component = "Buttons"
-                        scope.launch {
-                            drawerState.apply {
-                                close()
+                                }
                             }
+                        )
 
-                        }
                     }
-                )
-                NavigationDrawerItem(label = { Text("FloatingActionButtons")},
-                    selected = false,
-                    onClick = {
-                        component = "FloatingActionButtons"
-                        scope.launch {
-                            drawerState.apply {
-                                close()
-                            }
-
-                        }
-                    }
-                )
-                NavigationDrawerItem(label = { Text("Chips")},
-                    selected = false,
-                    onClick = {
-                        component = "Chips"
-                        scope.launch {
-                            drawerState.apply {
-                                close()
-                            }
-
-                        }
-                    }
-                )
-                NavigationDrawerItem(label = { Text("Progress")},
-                    selected = false,
-                    onClick = {
-                        component = "Progress"
-                        scope.launch {
-                            drawerState.apply {
-                                close()
-                            }
-
-                        }
-                    }
-                )
-                NavigationDrawerItem(label = { Text("Sliders")},
-                    selected = false,
-                    onClick = {
-                        component = "Sliders"
-                        scope.launch {
-                            drawerState.apply {
-                                close()
-                            }
-
-                        }
-                    }
-                )
-                NavigationDrawerItem(label = { Text("Switches")},
-                    selected = false,
-                    onClick = {
-                        component = "Switches"
-                        scope.launch {
-                            drawerState.apply {
-                                close()
-                            }
-
-                        }
-                    }
-                )
-                NavigationDrawerItem(label = { Text("Badges")},
-                    selected = false,
-                    onClick = {
-                        component = "Badges"
-                        scope.launch {
-                            drawerState.apply {
-                                close()
-                            }
-
-                        }
-                    }
-                )
-                NavigationDrawerItem(label = { Text("TimePickerExamples")},
-                    selected = false,
-                    onClick = {
-                        component = "TimePickerExamples"
-                        scope.launch {
-                            drawerState.apply {
-                                close()
-                            }
-
-                        }
-                    }
-                )
-                NavigationDrawerItem(label = { Text("DatePickerExamples")},
-                    selected = false,
-                    onClick = {
-                        component = "DatePickerExamples"
-                        scope.launch {
-                            drawerState.apply {
-                                close()
-                            }
-
-                        }
-                    }
-                )
-                NavigationDrawerItem(label = { Text("SnackBars")},
-                    selected = false,
-                    onClick = {
-                        component = "SnackBars"
-                        scope.launch {
-                            drawerState.apply {
-                                close()
-                            }
-
-                        }
-                    }
-                )
-                NavigationDrawerItem(label = { Text("AlertDialogs")},
-                    selected = false,
-                    onClick = {
-                        component = "AlertDialogs"
-                        scope.launch {
-                            drawerState.apply {
-                                close()
-                            }
-
-                        }
-                    }
-                )
-                NavigationDrawerItem(label = { Text("Bars")},
-                    selected = false,
-                    onClick = {
-                        component = "Bars"
-                        scope.launch {
-                            drawerState.apply {
-                                close()
-                            }
-
-                        }
-                    }
-                )
 
                 }
+            }
             
         }
 
@@ -290,12 +175,6 @@ fun Components(navController: NavController){
         //screen content
         Column {
             when(component){
-                "Content1" -> {
-                    Content1()
-                }
-                "Content2" ->{
-                    Content2()
-                }
                 "Buttons" ->{
                     Buttons()
                 }
@@ -332,22 +211,15 @@ fun Components(navController: NavController){
                 "Bars"->{
                     Bars()
                 }
+                "Adaptive"->{
+                    Adaptive()
+                }
 
             }
         }
 
     }
 
-}
-
-@Composable
-fun Content1(){
-    Text(text = "Content 1")
-}
-
-@Composable
-fun Content2(){
-    Text(text = "Content 2")
 }
 
 @Composable
@@ -402,7 +274,6 @@ fun FloatingButtons(){
     }
 }
 
-@Preview(showBackground = true)
 @Composable
 fun Chips(){
     Column (
@@ -598,8 +469,7 @@ fun Badges(){
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DialExample(
-) {
+fun DialExample() {
     val currentTime = Calendar.getInstance()
 
     val timePickerState = rememberTimePickerState(
@@ -674,15 +544,9 @@ fun convertMillisToDate(millis: Long): String {
     return formatter.format(Date(millis))
 }
 
-
-
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InputExample(
-
-) {
+fun InputExample() {
     val currentTime = Calendar.getInstance()
 
     val timePickerState = rememberTimePickerState(
@@ -697,8 +561,6 @@ fun InputExample(
         )
     }
 }
-
-
 
 @Composable
 fun TimePickerExamples(){
@@ -793,7 +655,7 @@ fun AlertDialogs() {
 }
 
 @Composable
-fun Bars(){
+private fun Bars(){
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -821,10 +683,14 @@ fun Bars(){
             )
         }
         var post = arrayOf(
-            PostModel(1,"Title 1", "Text 1"),
-            PostModel(2,"Title 2", "Text 2"),
-            PostModel(3,"Title 3", "Text 3"),
-            PostModel(4,"Title 4", "Text 4")
+            PostModel(1,"Title 1 of the card", "Text 1 of the card", painterResource(R.drawable.rym)),
+            PostModel(2,"Title 2 of the card", "Text 2 of the card", painterResource(R.drawable.rym)),
+            PostModel(3,"Title 3 of the card", "Text 3 of the card", painterResource(R.drawable.rym)),
+            PostModel(4,"Title 4 of the card", "Text 4 of the card", painterResource(R.drawable.rym)),
+            PostModel(5,"Title 5 of the card", "Text 5 of the card", painterResource(R.drawable.rym)),
+            PostModel(6,"Title 6 of the card", "Text 6 of the card", painterResource(R.drawable.rym)),
+            PostModel(7,"Title 7 of the card", "Text 7 of the card", painterResource(R.drawable.rym)),
+            PostModel(8,"Title 8 of the card", "Text 8 of the card", painterResource(R.drawable.rym))
         )
         Column(
             modifier = Modifier
@@ -832,7 +698,8 @@ fun Bars(){
                 .padding(10.dp, 90.dp, 10.dp, 50.dp)
                 .fillMaxSize()
         ) {
-            Posts(post)
+            //Posts(post)
+            PostsGrid(post)
         }
         Row (
             modifier= Modifier
@@ -896,25 +763,73 @@ fun Bars(){
 }
 
 @Composable
-fun Posts(arrayPosts:Array<PostModel>){
+fun Posts(arrayPosts:Array<PostModel>, adaptive:String){
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
     ){
         items(arrayPosts){post ->
-            Text(
-                text=post.text,
-                color = Color.White,
-                fontSize = 16.sp
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            HorizontalDivider(thickness = 2.dp)
-
+            when(adaptive){
+                "PhoneP"->{
+                    PostCardCompact(post.id, post.title, post.text, post.image)
+                }
+                "PhoneL"->{
+                    PostCard(post.id, post.title, post.text, post.image)
+                }
+            }
         }
 
     }
+}
 
+@Composable
+fun PostsGrid(arrayPosts: Array<PostModel>){
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(minSize = 128.dp),
+        modifier = Modifier
+            .fillMaxSize()
+    ){
+        items(arrayPosts){post ->
+            PostCard(post.id, post.title, post.text, post.image)
+        }
 
+    }
+}
+
+@Preview(showBackground = true, device = "spec:id=reference_tablet,shape=Normal,width=1280,height=800,unit=dp,dpi=240")
+@Composable
+fun Adaptive(){
+    var WindowsSize = currentWindowAdaptiveInfo().windowSizeClass
+    var heigth = currentWindowAdaptiveInfo().windowSizeClass.windowHeightSizeClass
+    var width = currentWindowAdaptiveInfo().windowSizeClass.windowWidthSizeClass
+
+    var post = arrayOf(
+        PostModel(1,"Title 1 of the card", "Text 1 of the card", painterResource(R.drawable.rym)),
+        PostModel(2,"Title 2 of the card", "Text 2 of the card", painterResource(R.drawable.rym)),
+        PostModel(3,"Title 3 of the card", "Text 3 of the card", painterResource(R.drawable.rym)),
+        PostModel(4,"Title 4 of the card", "Text 4 of the card", painterResource(R.drawable.rym)),
+        PostModel(5,"Title 5 of the card", "Text 5 of the card", painterResource(R.drawable.rym)),
+        PostModel(6,"Title 6 of the card", "Text 6 of the card", painterResource(R.drawable.rym)),
+        PostModel(7,"Title 7 of the card", "Text 7 of the card", painterResource(R.drawable.rym)),
+        PostModel(8,"Title 8 of the card", "Text 8 of the card", painterResource(R.drawable.rym))
+    )
+
+    if (width == WindowWidthSizeClass.COMPACT){
+        Posts(post, "PhoneP")
+    } else if (heigth == WindowHeightSizeClass.COMPACT){
+        Posts(post, "PhoneL")
+    } else{
+        Posts(post, "PhoneL")
+    }
+    //Text(text = WindowsSize.toString())
+
+    //width | compact<600dp | phone portrait
+    //width | medium>=600dp <840dp | tablet portrait
+    //width | expanded>840dp | tablet landscape
+
+    //height | compact<480dp | phone landscape
+    //height | medium >=480dp <900dp | tablet landscape or phone portrait
+    //height | expanded >900dp | tablet portrait
 
 }
 
