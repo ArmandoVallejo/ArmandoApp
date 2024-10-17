@@ -56,6 +56,7 @@ import com.example.armandoapp.ui.theme.ArmandoAppTheme
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.armandoapp.ui.screens.Components
 import com.example.armandoapp.ui.screens.HomeScreen
 import com.example.armandoapp.ui.screens.MenuScreen
 
@@ -64,7 +65,7 @@ import com.example.armandoapp.ui.screens.MenuScreen
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //enableEdgeToEdge()
+        enableEdgeToEdge()
         setContent {
             ComposeMultiScreenApp()
 
@@ -360,5 +361,6 @@ fun SetupNavGraph(navController: NavHostController){
         NavHost(navController = navController, startDestination="menu"){
             composable("menu"){ MenuScreen(navController) }
             composable("home"){ HomeScreen(navController) }
+            composable("components"){Components(navController)}
         }
 }

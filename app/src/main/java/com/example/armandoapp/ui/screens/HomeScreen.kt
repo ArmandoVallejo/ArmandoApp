@@ -11,6 +11,10 @@ fun HomeScreen (navController: NavController){
     Column {
         Text(text = "This is the HomeScreen")
         Button(onClick = {navController.navigate("menu")}) {
+            Text(text = "MenuScreen")
+        }
+        Button(onClick = {navController.navigate("components")}) {
+            Text(text = "ComponentScreen")
         }
     }
 }
