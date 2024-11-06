@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -31,6 +32,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,10 +54,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import com.example.armandoapp.ui.theme.ArmandoAppTheme
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.armandoapp.maps.viewModel.SearchViewModel
+import com.example.armandoapp.maps.views.HomeView
+import com.example.armandoapp.maps.views.MapsSearchView
 import com.example.armandoapp.ui.screens.Components
 import com.example.armandoapp.ui.screens.HomeScreen
 import com.example.armandoapp.ui.screens.MenuScreen
@@ -66,10 +73,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        val viewModel: SearchViewModel by viewModels()
+
         setContent {
-            ComposeMultiScreenApp()
-
-
+            ComposeMultiScreenApp(searchVM = viewModel)
 
            /* Column(
                 modifier = Modifier
@@ -107,6 +115,39 @@ class MainActivity : ComponentActivity() {
             }*/
             */
         }
+    }
+}
+
+@Composable
+fun ComposeMultiScreenApp( searchVM: SearchViewModel){
+    val navController = rememberNavController()
+    Surface(color=Color.White){
+        SetupNavGraph(navController = navController, searchVM)
+    }
+}
+
+@Composable
+fun SetupNavGraph(navController: NavHostController, searchVM: SearchViewModel){
+    NavHost(navController = navController, startDestination="menu"){
+        composable("menu"){ MenuScreen(navController) }
+        composable("home"){ HomeScreen(navController) }
+        composable("components"){Components(navController)}
+
+        composable("mapsHome"){ HomeView(navController = navController, searchVM = searchVM)}
+
+        composable("MapsSearchView/{lat}/{long}/{address}", arguments = listOf(
+            navArgument("lat") { type = NavType.FloatType },
+            navArgument("long") { type = NavType.FloatType },
+            navArgument("address") { type = NavType.StringType }
+        )) {
+            // Obtención de los argumentos con valores predeterminados en caso de que falten
+            val lat = it.arguments?.getFloat("lat") ?: 0.0
+            val long = it.arguments?.getFloat("long") ?: 0.0
+            val address = it.arguments?.getString("address") ?: ""
+            MapsSearchView(lat.toDouble(), long.toDouble(), address)
+            }
+
+
     }
 }
 
@@ -348,19 +389,3 @@ fun clickAction(){
     println("Column Clicked")
 }*/
 
-@Composable
-fun ComposeMultiScreenApp(){
-    val navController = rememberNavController()
-    Surface(color=Color.White){
-        SetupNavGraph(navController = navController)
-    }
-}
-
-@Composable
-fun SetupNavGraph(navController: NavHostController){
-        NavHost(navController = navController, startDestination="menu"){
-            composable("menu"){ MenuScreen(navController) }
-            composable("home"){ HomeScreen(navController) }
-            composable("components"){Components(navController)}
-        }
-}
