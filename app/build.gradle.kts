@@ -61,12 +61,18 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.adaptive.android)
+    implementation("io.coil-kt:coil-compose:2.4.0")
     
     //Maps
     implementation("com.google.maps.android:maps-compose:2.14.0")
     implementation("com.google.android.gms:play-services-maps:19.0.0")
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation("com.google.android.libraries.places:places:4.0.0")
+
+    //Retrofit
+    //implementation("")
+
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

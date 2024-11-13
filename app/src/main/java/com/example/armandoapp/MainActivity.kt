@@ -65,6 +65,7 @@ import com.example.armandoapp.maps.views.HomeView
 import com.example.armandoapp.maps.views.MapsSearchView
 import com.example.armandoapp.ui.screens.Components
 import com.example.armandoapp.ui.screens.HomeScreen
+import com.example.armandoapp.ui.screens.LoginScreen
 import com.example.armandoapp.ui.screens.MenuScreen
 
 //import androidx.navigation.compose.NavHostController
@@ -128,10 +129,11 @@ fun ComposeMultiScreenApp( searchVM: SearchViewModel){
 
 @Composable
 fun SetupNavGraph(navController: NavHostController, searchVM: SearchViewModel){
-    NavHost(navController = navController, startDestination="menu"){
+    NavHost(navController = navController, startDestination="login"){
         composable("menu"){ MenuScreen(navController) }
         composable("home"){ HomeScreen(navController) }
         composable("components"){Components(navController)}
+        composable("login"){LoginScreen(navController)}
 
         composable("mapsHome"){ HomeView(navController = navController, searchVM = searchVM)}
 
