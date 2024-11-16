@@ -1,10 +1,16 @@
 package com.example.armandoapp
 
+import android.content.pm.PackageManager
+import android.net.ConnectivityManager
+import android.net.wifi.WifiManager
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -52,6 +58,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -60,6 +67,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.armandoapp.biometrics.views.BiometricsScreen
+import com.example.armandoapp.internet.NetworkMonitor
 import com.example.armandoapp.maps.viewModel.SearchViewModel
 import com.example.armandoapp.maps.views.HomeView
 import com.example.armandoapp.maps.views.MapsSearchView
@@ -67,18 +76,29 @@ import com.example.armandoapp.ui.screens.Components
 import com.example.armandoapp.ui.screens.HomeScreen
 import com.example.armandoapp.ui.screens.LoginScreen
 import com.example.armandoapp.ui.screens.MenuScreen
+import android.Manifest
 
 //import androidx.navigation.compose.NavHostController
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var wifiManager: WifiManager  // Para gestionar el Wi-Fi
+    private lateinit var connectivityManager: ConnectivityManager  // Para gestionar las conexiones de red
+    private lateinit var networkMonitor: NetworkMonitor  // Clase que monitorea el estado de la red
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         val viewModel: SearchViewModel by viewModels()
 
+        wifiManager = getSystemService(WIFI_SERVICE) as WifiManager
+        connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        networkMonitor = NetworkMonitor(wifiManager, connectivityManager, this)
+
         setContent {
-            ComposeMultiScreenApp(searchVM = viewModel)
+            ComposeMultiScreenApp(searchVM = viewModel, this, networkMonitor)
 
            /* Column(
                 modifier = Modifier
@@ -116,24 +136,58 @@ class MainActivity : ComponentActivity() {
             }*/
             */
         }
+
+
     }
+    fun requestPermissionsIfNeeded() {
+        val permissions = listOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,  // Permiso para la ubicación precisa
+            Manifest.permission.ACCESS_COARSE_LOCATION  // Permiso para la ubicación aproximada
+        ).filter {
+            // Verificamos si alguno de los permisos no ha sido concedido
+            ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
+        }
+
+        // Si falta algún permiso, solicitamos los permisos necesarios
+        if (permissions.isNotEmpty()) {
+            requestPermissionsLauncher.launch(permissions.toTypedArray())
+        }
+    }
+
+    private val requestPermissionsLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions())
+        { permissions ->
+            // Verificamos si los permisos de ubicación fueron concedidos
+            if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+                permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+            ) {
+                // Si los permisos son concedidos, mostramos un mensaje
+                Toast.makeText(this, "Permisos necesarios concedidos", Toast.LENGTH_SHORT).show()
+            } else {
+                // Si no se conceden, mostramos un mensaje de error
+                Toast.makeText(this, "Permisos necesarios no concedidos", Toast.LENGTH_SHORT).show()
+            }
+        }
 }
 
 @Composable
-fun ComposeMultiScreenApp( searchVM: SearchViewModel){
+fun ComposeMultiScreenApp( searchVM: SearchViewModel, activity: AppCompatActivity, networkMonitor: NetworkMonitor){
     val navController = rememberNavController()
     Surface(color=Color.White){
-        SetupNavGraph(navController = navController, searchVM)
+        SetupNavGraph(navController = navController, searchVM, activity, networkMonitor)
     }
 }
 
 @Composable
-fun SetupNavGraph(navController: NavHostController, searchVM: SearchViewModel){
+fun SetupNavGraph(navController: NavHostController, searchVM: SearchViewModel, activity: AppCompatActivity, networkMonitor: NetworkMonitor){
     NavHost(navController = navController, startDestination="login"){
+
         composable("menu"){ MenuScreen(navController) }
         composable("home"){ HomeScreen(navController) }
         composable("components"){Components(navController)}
         composable("login"){LoginScreen(navController)}
+        composable("biometrics"){BiometricsScreen(navController, activity)}
+        composable("internet"){networkMonitor.NetworkMonitorScreen(navController)}
 
         composable("mapsHome"){ HomeView(navController = navController, searchVM = searchVM)}
 
@@ -152,6 +206,8 @@ fun SetupNavGraph(navController: NavHostController, searchVM: SearchViewModel){
 
     }
 }
+
+
 
 /*@Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {

@@ -1,15 +1,21 @@
 package com.example.armandoapp.ui.screens
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 
 @Composable
 fun MenuScreen(navController: NavController){
-    Column {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+    ){
         Text(text = "This is the Menu Screen")
         Button(onClick = {navController.navigate("home")}) {
             Text(text = "HomeScreen")
@@ -19,6 +25,12 @@ fun MenuScreen(navController: NavController){
         }
         Button(onClick = {navController.navigate("mapsHome")}) {
             Text(text = "MapsScreen")
+        }
+        Button(onClick = {navController.navigate("biometrics")}) {
+            Text(text = "BiometricsScreen")
+        }
+        Button(onClick = {navController.navigate("internet")}) {
+            Text(text = "InternetScreen")
         }
 
     }

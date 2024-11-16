@@ -75,6 +75,18 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:19.0.0")
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation("com.google.android.libraries.places:places:4.0.0")
+    implementation(libs.androidx.appcompat)
+
+    //Biometrics
+    implementation("androidx.biometric:biometric:1.1.0")
+    //implementation(libs.androidx.biometric.ktx)
+
+    //Internet
+    implementation("androidx.compose.ui:ui:1.7.5")
+    implementation("androidx.compose.material:material:1.7.5")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.7.5")
+    implementation("androidx.activity:activity-compose:1.9.3")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.7.5")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
