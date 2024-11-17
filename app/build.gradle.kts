@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.org.jetbrains.kotlin.kapt)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -61,6 +63,14 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.adaptive.android)
+
+    //WorkManager
+    implementation("androidx.work:work-runtime:2.9.0")
+
+    //Dagger-Hit
+    implementation("com.google.dagger:hilt-android:2.44.2")
+    kapt("com.google.dagger:hilt-compiler:2.44.2")
+    implementation("androidx.hilt:hilt-work:1.2.0")
 
     //Retrofit
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")

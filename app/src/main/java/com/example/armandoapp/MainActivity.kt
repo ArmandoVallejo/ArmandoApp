@@ -78,10 +78,13 @@ import com.example.armandoapp.ui.screens.HomeScreen
 import com.example.armandoapp.ui.screens.LoginScreen
 import com.example.armandoapp.ui.screens.MenuScreen
 import android.Manifest
+import androidx.work.BackoffPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import com.example.armandoapp.background_process.CustomWorker
 import com.example.armandoapp.camera.CameraScreen
 import com.example.armandoapp.contacts_calendar.ContactScreen
-
-//import androidx.navigation.compose.NavHostController
+import java.time.Duration
 
 class MainActivity : AppCompatActivity() {
 
@@ -92,6 +95,20 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        //WorkManager
+        //------------------------------------------
+        val workRequest = OneTimeWorkRequestBuilder<CustomWorker>()
+            .setInitialDelay(Duration.ofSeconds(10))
+            .setBackoffCriteria(
+                backoffPolicy = BackoffPolicy.LINEAR,
+                duration = Duration.ofSeconds(15)
+            )
+            .build()
+        WorkManager.getInstance(applicationContext).enqueue(workRequest)
+        //By adding this, message "Hello from worker!" should be seen from LogCat
+
+        //--------------------------------------------
 
         val viewModel: SearchViewModel by viewModels()
 
