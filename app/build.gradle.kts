@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.org.jetbrains.kotlin.kapt)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -61,7 +63,44 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.adaptive.android)
-    //implementation(libs.androidx.navigation.runtime.ktx)
+
+    //WorkManager
+    implementation("androidx.work:work-runtime:2.9.0")
+
+    //Dagger-Hit
+    implementation("com.google.dagger:hilt-android:2.44.2")
+    kapt("com.google.dagger:hilt-compiler:2.44.2")
+    implementation("androidx.hilt:hilt-work:1.2.0")
+
+    //Retrofit
+    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+    implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    
+    //Maps
+    implementation("com.google.maps.android:maps-compose:2.14.0")
+    implementation("com.google.android.gms:play-services-maps:19.0.0")
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation("com.google.android.libraries.places:places:4.0.0")
+    implementation(libs.androidx.appcompat)
+
+    //Biometrics
+    implementation("androidx.biometric:biometric:1.1.0")
+    //implementation(libs.androidx.biometric.ktx)
+
+    //Internet
+    implementation("androidx.compose.ui:ui:1.7.5")
+    implementation("androidx.compose.material:material:1.7.5")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.7.5")
+    implementation("androidx.activity:activity-compose:1.9.3")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.7.5")
+
+    //Camera
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
