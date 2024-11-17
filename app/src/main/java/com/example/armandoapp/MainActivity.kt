@@ -5,6 +5,7 @@ import android.net.ConnectivityManager
 import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -77,6 +78,8 @@ import com.example.armandoapp.ui.screens.HomeScreen
 import com.example.armandoapp.ui.screens.LoginScreen
 import com.example.armandoapp.ui.screens.MenuScreen
 import android.Manifest
+import com.example.armandoapp.camera.CameraScreen
+import com.example.armandoapp.contacts_calendar.ContactScreen
 
 //import androidx.navigation.compose.NavHostController
 
@@ -180,17 +183,17 @@ fun ComposeMultiScreenApp( searchVM: SearchViewModel, activity: AppCompatActivit
 
 @Composable
 fun SetupNavGraph(navController: NavHostController, searchVM: SearchViewModel, activity: AppCompatActivity, networkMonitor: NetworkMonitor){
+    val context = LocalContext.current
     NavHost(navController = navController, startDestination="login"){
-
         composable("menu"){ MenuScreen(navController) }
         composable("home"){ HomeScreen(navController) }
         composable("components"){Components(navController)}
         composable("login"){LoginScreen(navController)}
         composable("biometrics"){BiometricsScreen(navController, activity)}
         composable("internet"){networkMonitor.NetworkMonitorScreen(navController)}
-
         composable("mapsHome"){ HomeView(navController = navController, searchVM = searchVM)}
-
+        composable("camera"){CameraScreen(context = context, navController)}
+        composable("contact"){ContactScreen(navController)}
         composable("MapsSearchView/{lat}/{long}/{address}", arguments = listOf(
             navArgument("lat") { type = NavType.FloatType },
             navArgument("long") { type = NavType.FloatType },

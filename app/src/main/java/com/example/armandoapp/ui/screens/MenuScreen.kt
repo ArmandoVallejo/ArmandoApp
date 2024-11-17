@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.navigation.NavController
@@ -31,6 +32,12 @@ fun MenuScreen(navController: NavController){
         }
         Button(onClick = {navController.navigate("internet")}) {
             Text(text = "InternetScreen")
+        }
+        Button(onClick = {navController.navigate("camera")}) {
+            Text(text = "CameraScreen")
+        }
+        Button(onClick = {navController.navigate("contact")}) {
+            Text(text = "ContactScreen")
         }
 
     }
