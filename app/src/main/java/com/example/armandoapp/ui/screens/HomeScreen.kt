@@ -1,8 +1,9 @@
 package com.example.armandoapp.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -14,6 +15,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -30,6 +32,7 @@ import com.example.armandoapp.R
 import com.example.armandoapp.data.controller.ServiceViewModel
 import com.example.armandoapp.data.model.ServiceModel
 import com.example.armandoapp.ui.components.ServiceCard
+import com.example.armandoapp.ui.components.ServiceDetailCard
 import com.example.armandoapp.ui.components.TopBar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -83,6 +86,7 @@ fun HomeScreen (navController: NavController, viewModel: ServiceViewModel = andr
                 .fillMaxSize(),
             state = listState
         ){
+            Log.d("debuginfo",services.toString())
             items(services){ service ->
                 ServiceCard(service.id, service.name , service.username, service.imageURL,
                     onButtonClick = {
@@ -92,6 +96,28 @@ fun HomeScreen (navController: NavController, viewModel: ServiceViewModel = andr
                             }
                         }
                         showBottomSheet=true
+                    }
+                )
+            }
+        }
+        if(showBottomSheet){
+            ModalBottomSheet(
+                containerColor = colorResource(id = R.color.teal_200),
+                contentColor = Color.White,
+                modifier = Modifier.fillMaxHeight(),
+                onDismissRequest = { showBottomSheet = false },
+                sheetState = sheetState
+            ) {
+                ServiceDetailCard(
+                    id = serviceDetail?.id ?: 0,
+                    name = serviceDetail?.name ?: "",
+                    username = serviceDetail?.username?:"",
+                    password = serviceDetail?.password?:"",
+                    description = serviceDetail?.description?:"",
+                    imageURL = serviceDetail?.imageURL,
+                    onEditClick = {
+                        showBottomSheet = false
+                        navController.navigate("manage-service/" + serviceDetail?.id)
                     }
                 )
             }
@@ -114,4 +140,4 @@ fun HomeScreen (navController: NavController, viewModel: ServiceViewModel = andr
             Text(text = "ComponentScreen")
         }
     }*/
-}
+
