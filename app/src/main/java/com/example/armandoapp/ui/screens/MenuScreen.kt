@@ -39,6 +39,9 @@ fun MenuScreen(navController: NavController){
         Button(onClick = {navController.navigate("contact")}) {
             Text(text = "ContactScreen")
         }
+        Button(onClick = {navController.navigate("login")}) {
+            Text(text = "LoginScreen")
+        }
 
     }
 }
