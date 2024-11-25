@@ -63,13 +63,15 @@ fun ServiceCard(
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier
-                            .padding(2.dp, 8.dp, 0.dp, 0.dp)
+                            .padding(2.dp, 8.dp, 0.dp, 0.dp),
+                        color = Color.White
                     )
                     Text(
                         text = username,
                         fontSize = 15.sp,
                         modifier = Modifier
-                            .padding(4.dp, 0.dp)
+                            .padding(4.dp, 0.dp),
+                        color = Color.White
                     )
                 }
             Row(
