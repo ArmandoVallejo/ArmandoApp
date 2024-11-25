@@ -3,11 +3,12 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.org.jetbrains.kotlin.kapt)
     alias(libs.plugins.hilt)
+    id("com.google.devtools.ksp")
 }
 
 android {
     namespace = "com.example.armandoapp"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.armandoapp"
@@ -69,6 +70,7 @@ dependencies {
 
     //Dagger-Hit
     implementation("com.google.dagger:hilt-android:2.44.2")
+    implementation(libs.androidx.room.common)
     kapt("com.google.dagger:hilt-compiler:2.44.2")
     implementation("androidx.hilt:hilt-work:1.2.0")
 
@@ -100,6 +102,10 @@ dependencies {
 
     //Camera
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
+
+    //SQLITE
+    val room_version = "2.6.1"
+    ksp("androidx.room:room-compiler:$room_version")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
