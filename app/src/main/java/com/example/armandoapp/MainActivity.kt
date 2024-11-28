@@ -78,16 +78,21 @@ import com.example.armandoapp.ui.screens.HomeScreen
 import com.example.armandoapp.ui.screens.LoginScreen
 import com.example.armandoapp.ui.screens.MenuScreen
 import android.Manifest
+import android.util.Log
 import androidx.work.BackoffPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.armandoapp.background_process.CustomWorker
 import com.example.armandoapp.camera.CameraScreen
 import com.example.armandoapp.contacts_calendar.ContactScreen
+import com.example.armandoapp.data.database.AppDatabase
+import com.example.armandoapp.data.database.DatabaseProvider
 import com.example.armandoapp.ui.screens.ManageServiceScreen
 import java.time.Duration
 
 class MainActivity : AppCompatActivity() {
+
+    lateinit var database: AppDatabase
 
     private lateinit var wifiManager: WifiManager  // Para gestionar el Wi-Fi
     private lateinit var connectivityManager: ConnectivityManager  // Para gestionar las conexiones de red
@@ -95,6 +100,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        try{
+            database = DatabaseProvider.getDatabase(this)
+            Log.d("DB", "Database loaded succesfully")
+        } catch(exception:Exception){
+            Log.d("DB", "error: $exception")
+        }
         enableEdgeToEdge()
 
         //WorkManager

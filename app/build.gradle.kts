@@ -71,6 +71,7 @@ dependencies {
     //Dagger-Hit
     implementation("com.google.dagger:hilt-android:2.44.2")
     implementation(libs.androidx.room.common)
+    implementation(libs.androidx.room.ktx)
     kapt("com.google.dagger:hilt-compiler:2.44.2")
     implementation("androidx.hilt:hilt-work:1.2.0")
 
