@@ -31,8 +31,14 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.armandoapp.R
 import com.example.armandoapp.data.controller.ServiceViewModel
+import com.example.armandoapp.data.dao.ServiceDao
+import com.example.armandoapp.data.database.AppDatabase
+import com.example.armandoapp.data.database.DatabaseProvider
 import com.example.armandoapp.data.model.ServiceModel
 import com.example.armandoapp.ui.components.TopBar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -41,6 +47,8 @@ fun ManageServiceScreen(
     serviceId: String?,
     viewModel: ServiceViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ){
+    val db: AppDatabase = DatabaseProvider.getDatabase(LocalContext.current)
+    val serviceDao = db.serviceDao()
     val service = remember {mutableStateOf(ServiceModel())}
     val context = LocalContext.current
     var bar_title by remember {mutableStateOf("Create new service")}
@@ -189,7 +197,7 @@ fun ManageServiceScreen(
                         .padding(0.dp, 10.dp),
                     shape = CutCornerShape(4.dp),
                     onClick = {
-                        delete(viewModel, context, serviceId, navController)
+                        delete(viewModel, context, serviceId, navController, serviceDao)
                     }
                 ) {
                     Text("DELETE")
@@ -244,11 +252,20 @@ fun delete(
     viewModel: ServiceViewModel,
     context: Context,
     serviceId: String?,
-    navController: NavController
+    navController: NavController,
+    serviceDao: ServiceDao
 ) {
     if (serviceId != null && serviceId != "0") {
         viewModel.deleteService(serviceId.toInt()) { response ->
             if (response.isSuccessful) {
+
+                //
+                CoroutineScope(Dispatchers.IO).launch {
+                    val service = serviceDao.show(serviceId.toInt())
+                    serviceDao.delete(service)
+                }
+                //
+
                 Toast.makeText(
                     context,
                     "Service deleted successfully",

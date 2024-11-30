@@ -26,18 +26,30 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavController
 import com.example.armandoapp.R
 import com.example.armandoapp.data.controller.ServiceViewModel
+import com.example.armandoapp.data.database.AppDatabase
+import com.example.armandoapp.data.database.DatabaseProvider
+import com.example.armandoapp.data.model.ServiceEntity
 import com.example.armandoapp.data.model.ServiceModel
 import com.example.armandoapp.ui.components.ServiceCard
 import com.example.armandoapp.ui.components.ServiceDetailCard
 import com.example.armandoapp.ui.components.TopBar
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen (navController: NavController, viewModel: ServiceViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+
+    val db: AppDatabase = DatabaseProvider.getDatabase(LocalContext.current)
+    val serviceDao = db.serviceDao()
+
+    var services by remember { mutableStateOf<List<ServiceEntity>>(emptyList())}
+
     var serviceDetail by remember { mutableStateOf<ServiceModel?>(null) }
     var sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = false
@@ -64,17 +76,10 @@ fun HomeScreen (navController: NavController, viewModel: ServiceViewModel = andr
         }
     ){ innerPadding ->
 
-        var services by remember {mutableStateOf<List<ServiceModel>>(emptyList())}
-        if(services.isEmpty()){
-            CircularProgressIndicator()
-        }
-        LaunchedEffect(Unit){
-            viewModel.getServices { response ->
-                if(response.isSuccessful){
-                    services = response.body()?: emptyList()
-                } else {
-                    println("failed to load posts")
-                }
+        LaunchedEffect(Unit) {
+            services =  withContext(Dispatchers.IO) {
+                viewModel.getServices(db)
+                serviceDao.getAll()
             }
         }
 
