@@ -134,7 +134,7 @@ fun LoginForm(
                 }
                 is LoginState.Error -> Text(
                     text = (loginState as LoginState.Error).message,
-                    color = Color.Red,
+                    color = Color.White,
                     modifier = Modifier.padding(top = 10.dp)
                 )
             }
