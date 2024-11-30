@@ -1,5 +1,7 @@
 package com.example.armandoapp.data.network
 
+import com.example.armandoapp.data.model.LoginRequest
+import com.example.armandoapp.data.model.LoginResponse
 import com.example.armandoapp.data.model.ServiceModel
 import retrofit2.Response
 import retrofit2.http.Body
@@ -24,5 +26,8 @@ interface ApiService {
 
     @DELETE("service/{id}")
     suspend fun deleteService(@Path("id") id:Int):Response<ServiceModel>
+
+    @POST("user")
+    suspend fun login(@Body request: LoginRequest): Response<LoginResponse>
 
 }
